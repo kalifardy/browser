@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText txtUrl;
     private Button btnGo;
     private ProgressBar progressBar;
-    String url;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -84,9 +83,18 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 web.loadUrl(url);
+                web.setWebViewClient(new MyWebLaunch());
 
             }
         });
+    }
+    private class MyWebLaunch extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            return super.shouldOverrideUrlLoading(view, url);
+        }
+
     }
 
     //perintah button back,next,refresh,stop
@@ -96,6 +104,15 @@ public class MainActivity extends AppCompatActivity {
     public void goNext(View view){web.goForward();}
     public void Stop(View view){web.stopLoading();}
     public void Refresh(View view){web.reload();}
+    //ketika kita sentuh back maka akan kembali ke halaman sebelum nya
+    @Override
+    public void onBackPressed() {
+        if (web.canGoBack()) {
+            web.goBack();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     //perintah untuk rotate supaya tidak balik lagi ke halaman awal
     public  void  onConfigurationChanged(Configuration newConfig){
